@@ -1,0 +1,29 @@
+version: "3.7"
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pgpassword
+      POSTGRES_DB: wordsdb
+    ports:
+      - 5432:5432
+    volumes:
+      - ./seed.sql:/docker-entrypoint-initdb.d/init.sql
+
+  words-ui: 
+    build: ./words-ui
+    ports:
+      - 3000:3000
+
+  words-api: 
+    build: ./words-api
+    environment:
+      PGUSER: postgres
+      PGPASSWORD: pgpassword
+      PGDATABASE: wordsdb
+      PGPORT: 5432
+      PGHOST: db
+    ports:
+      - 8000:8000
